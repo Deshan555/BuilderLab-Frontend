@@ -6,7 +6,7 @@ import React, { useEffect, useRef } from "react";
 import { apiExecutions } from './../api/api-call';
 import ReactDOM from "react-dom";
 import "./../styles.css";
-import { Checkbox, InputNumber, Spin, Avatar, Notification, notification, Card, Skeleton, Switch, Table, Select, Input, Button, Row, Upload, Col, Dropdown, Tag, Modal, Steps, message, Form, DatePicker, TimePicker, Descriptions, Image, Tabs } from 'antd';
+import { Breadcrumb, Checkbox, InputNumber, Spin, Avatar, Notification, notification, Card, Skeleton, Switch, Table, Select, Input, Button, Row, Upload, Col, Dropdown, Tag, Modal, Steps, message, Form, DatePicker, TimePicker, Descriptions, Image, Tabs } from 'antd';
 import { HighlightOutlined, PlusOutlined, DownOutlined, UploadOutlined, CheckOutlined, CloseOutlined, LoadingOutlined, MinusCircleOutlined, PlusCircleOutlined, DeleteOutlined, EditOutlined, SaveOutlined, ExclamationCircleOutlined, EyeOutlined } from '@ant-design/icons';
 import "./../formBuilder.css";
 
@@ -23,13 +23,13 @@ function Home() {
   const fb = useRef();
   const [formDataJson, setFormDataJson] = React.useState([]);
   const [checkList, setCheckList] = React.useState([]);
-  const [selectedChecklist, setSelectedChecklist] = React.useState(null);
+  const [selectedChecklist, setSelectedChecklist] = React.useState("telecom-maintenance-001");
   const [openModal, setOpenModal] = React.useState(false);
 
 
   useEffect(() => {
     fetchAllChecklists();
-  }, []); 
+  }, []);
 
   useEffect(() => {
     let intervalId = null;
@@ -198,24 +198,25 @@ function Home() {
 
   return (
     <div className="bg-gray-100 p-4">
-      <div className="bg-white p-4 rounded-md shadow-md">
+      <div style={{ padding: '20px', borderRadius: '10px' }}>
+        <Row justify="space-between" style={{ marginBottom: '15px' }}>
+          <div>
+            <span className='textStyles-small' style={{ fontSize: '17px', fontWeight: 'bold' }}>
+              Builder Lab
+            </span>
+            <Breadcrumb
+              style={{ marginTop: '10px', marginLeft: '10px' }}>
+              <Breadcrumb.Item>
+                <span className='textStyles-small'>Home</span>
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                <span className='textStyles-small'>Builder Lab</span>
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          </div>
+        </Row>
 
-        <span style={{ fontSize: "20px", fontWeight: "bold" }}>Checklist Builder</span>
-        "Save your work as draft before you exit the page.
-        <span style={{ float: "right" }} className="textStyles-small">
-          {/* <Avatar size="small" icon={<LoadingOutlined />} />
-          <Avatar size="small" icon={<LoadingOutlined />} /> */}
-          Load Last Draft <Switch size="small" style={{ marginLeft: "10px" }} onChange={(checked) => {
-            if (checked) {
-              const draft = JSON.parse(localStorage.getItem('draft'));
-              if (draft) {
-                initializeFormBuilder(fb, draft.template);
-              }
-            }
-          } } />
-        </span>        
-
-        <div style={{ marginTop: "10px", backgroundColor: "white", padding: "20px" }}>
+        <div style={{ marginTop: "10px", backgroundColor: "white", padding: "20px", borderRadius: "10px" }}>
           <div style={{ marginTop: "10px", backgroundColor: "#f5f5f5", padding: "10px", borderRadius: "10px" }}>
 
             <Button
@@ -243,11 +244,14 @@ function Home() {
       </div>
 
       <Modal
-        title="Create Session"
+        title={<span className="textStyles-small" style={{fontSize: "16px"}}>
+          Create New Section
+        </span>}
         visible={openModal}
         onCancel={() => setOpenModal(false)}
         footer={null}
         destroyOnClose={true}
+        width={800}
       >
         <Form
           form={form}
@@ -255,6 +259,7 @@ function Home() {
           name="basic"
           initialValues={{ remember: true }}
           onFinish={onFinish}
+          style={{marginTop: "20px"}}
         >
           <Row>
             <Col span={12}>
@@ -265,17 +270,15 @@ function Home() {
               >
                 <Select
                   placeholder="Choose a checklist"
-                  optionFilterProp="children"
-                  className="my-select-container"
                   style={{ width: "99%" }}
-                  bordered={true}
-                  filterOption={(input, option) =>
-                    option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                  }
+                  onChange={(value) => setSelectedChecklist(value)}
                 >
                   {checkList?.map((item, index) => (
-                    <Select.Option key={index} value={item.checklistID} className="textStyles-small">
-                      {item.name}
+                    <Select.Option 
+                    key={index} 
+                    value={item?.checklistID} 
+                    className="textStyles-small">
+                      {item?.name}
                     </Select.Option>
                   ))}
                 </Select>
@@ -283,24 +286,30 @@ function Home() {
             </Col>
             <Col span={12}>
               <Form.Item
-                label={<span className="textStyles-small">Session Name</span>}
+                label={<span className="textStyles-small">Section Name</span>}
                 name="sessionName"
                 rules={[{ required: true, message: 'Please input the session name!' }]}
               >
-                <Input style={{ width: '99%' }} />
+                <Select style={{ width: '99%' }}>
+                  {
+                    selectedChecklist !== null ? (
+                      checkList?.map((item) => {
+                        if (item?.checklistID === selectedChecklist) {
+                          return item?.sections.map((section) => (
+                            <Select.Option key={section?.sectionName} value={section?.sectionName}>
+                              {section?.sectionName}
+                            </Select.Option>
+                          ))
+                        }
+                        return null;
+                      })
+                    ) : null
+                  }
+                </Select>
               </Form.Item>
             </Col>
           </Row>
           <Row>
-            <Col span={12}>
-              <Form.Item
-                label={<span className="textStyles-small">Session Index</span>}
-                name="sessionIndex"
-                rules={[{ required: true, message: 'Please input the session index!' }]}
-              >
-                <InputNumber style={{ width: '99%' }} />
-              </Form.Item>
-            </Col>
             <Col span={12}>
               <Form.Item
                 label={<span className="textStyles-small">Is Active</span>}
@@ -313,8 +322,6 @@ function Home() {
                 </Select>
               </Form.Item>
             </Col>
-          </Row>
-          <Row>
             <Col span={12}>
               <Form.Item
                 label={<span className="textStyles-small">Is Draft</span>}
@@ -327,6 +334,8 @@ function Home() {
                 </Select>
               </Form.Item>
             </Col>
+          </Row>
+          <Row>
             <Col span={12}>
               <Form.Item
                 label={<span className="textStyles-small">Version</span>}
@@ -338,11 +347,19 @@ function Home() {
             </Col>
           </Row>
           <Row>
-            <Col span={24}>
+            <Col span={12}>
               <Form.Item
-                label={<span className="textStyles-small">Session Description</span>}
+                label={<span className="textStyles-small">Section Description</span>}
                 name="sessionDescription"
                 rules={[{ required: true, message: 'Please input the session description!' }]}
+              >
+                <Input.TextArea rows={4} style={{ width: '99%' }} />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                label={<span className="textStyles-small">Change Log</span>}
+                name="changeLog"
               >
                 <Input.TextArea rows={4} style={{ width: '99%' }} />
               </Form.Item>
