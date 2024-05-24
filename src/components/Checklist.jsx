@@ -18,6 +18,7 @@ const Checklist = () => {
     const [selectedChecklist, setSelectedChecklist] = React.useState({});
     const [isUpdate, setIsUpdate] = React.useState(false);
     const [noOfSections, setNoOfSections] = React.useState(1);
+    const [openInformationModal, setOpenInformationModal] = React.useState(false);
 
     useEffect(() => {
         getChecklistsFetch();
@@ -84,22 +85,28 @@ const Checklist = () => {
             title: (<span className='textStyles-small'>Action</span>),
             key: 'action',
             render: (text, record) => (
-                <span>
-                    <Button type="link"
+                <span style={{ display: 'flex' }}>
+                    <Button
+                        size='small'
+                        type="primary"
                         shape='circle'
                         icon={<EditOutlined />}
+                        style={{ backgroundColor: '#008000', marginRight: '5px' }}
                         onClick={() => {
                             setSelectedChecklist(record);
-                            setIsUpdate(true);
                             setFormVisible(true);
+                            setNoOfSections(record.sectionCount);
+                            setIsUpdate(true);
                         }} />
 
                     <Button
+                        size='small'
+                        type="primary"
                         shape='circle'
                         icon={<EyeOutlined />}
-                        type="link" onClick={() => {
+                        onClick={() => {
                             setSelectedChecklist(record);
-                            setFormVisible(true);
+                            setOpenInformationModal(true);
                             setNoOfSections(record.sectionCount);
                         }} />
                 </span>
@@ -118,20 +125,26 @@ const Checklist = () => {
             sections: Array.from({ length: noOfSections }, (_, index) => ({
                 sectionName: values[`sectionName${index}`],
                 sectionDescription: values[`sectionDescription${index}`],
+                sectionIndex: values[`sectionIndex${index}`]
             }))
         };
 
         console.log(data);
         if (isUpdate) {
-            // const response = await apiExecutions.updateChecklistFetch(selectedChecklist._id, data);
-            // if (response !== undefined || response !== null) {
-            //     notification.success({
-            //         message: 'Checklist Updated',
-            //         description: 'Checklist has been updated successfully',
-            //     });
-            //     getChecklistsFetch();
-            //     setFormVisible(false);
-            // }
+            const response = await apiExecutions.updateChecklist(selectedChecklist._id, data);
+            if (response?.acknowledged === true) {
+                notification.success({
+                    message: 'Checklist Updated',
+                    description: 'Checklist has been updated successfully',
+                });
+                getChecklistsFetch();
+                setFormVisible(false);
+            } else {
+                notification.error({
+                    message: 'Checklist Update Failed',
+                    description: 'Checklist has not been updated successfully' + response?.error,
+                });
+            }
         } else {
             const response = await apiExecutions.craeteChecklists(data);
             setLoading(true);
@@ -146,7 +159,7 @@ const Checklist = () => {
             } else {
                 notification.error({
                     message: 'Checklist Creation Failed',
-                    description: 'Checklist has not been created successfully'+ response?.error,
+                    description: 'Checklist has not been created successfully' + response?.error,
                 });
                 setLoading(false);
             }
@@ -284,7 +297,7 @@ const Checklist = () => {
                                             <Col span={12}>
                                                 <Form.Item
                                                     label={<span className='textStyles-small'>Section Index</span>}
-                                                    name={`sectionDescription${index}`}
+                                                    name={`sectionIndex${index}`}
                                                     initialValue={index + 1}
                                                 >
                                                     <Input style={{ width: '98%' }} />
@@ -294,9 +307,10 @@ const Checklist = () => {
                                                 <Form.Item
                                                     label={<span className='textStyles-small'>Section {index + 1} Description</span>}
                                                     name={`sectionDescription${index}`}
-                                                    initialValue={selectedChecklist.sections ? selectedChecklist.sections[index].sectionDescription : ''}
+                                                    initialValue={selectedChecklist.sections[index]?.sectionDescription}
                                                 >
-                                                    <Input.TextArea style={{ width: '98%' }} />
+                                                    <Input
+                                                        style={{ width: '100%' }} />
                                                 </Form.Item>
                                             </Col>
                                             <Button type="primary" danger
@@ -350,17 +364,17 @@ const Checklist = () => {
             }
         </div>
 
-        <Modal 
+        <Modal
             title={<span className='textStyles-small' style={{ fontSize: '16px' }}>
                 <span className='textStyles-small' style={{ fontSize: '16px' }}>
                     {selectedChecklist.name}
                 </span>
-                </span>}
-            visible={true}
-            onCancel={() => setFormVisible(false)}
+            </span>}
+            visible={openInformationModal}
+            onCancel={() => setOpenInformationModal(false)}
             footer={null}
             width={850}
-            >
+        >
             <Descriptions
                 layout="horizontal"
                 bordered
@@ -392,22 +406,20 @@ const Checklist = () => {
                     <span className='textStyles-small'>{selectedChecklist.checklistID}</span>
                 </Descriptions.Item>
                 <Descriptions.Item label={<span className='textStyles-small'>Sections</span>}>
-                    <Descriptions size='small' column={1}>
+                    <Descriptions size='small' column={1} bordered>
                         {
                             selectedChecklist.sections?.map((section, index) => (
                                 <Descriptions.Item
-                                    title={<span className='textStyles-small'>Section {index + 1}</span>}
-                                    style={{ width: '100%', marginTop: '10px' }}
+                                    label={<span className='textStyles-small'>{section.sectionName}</span>}
                                 >
-                                    <p className='textStyles-small'>Section Name: {section.sectionName}</p>
-                                    <p className='textStyles-small'>Section Description: {section.sectionDescription}</p>
+                                    <span className='textStyles-small'>Section Description: {section.sectionDescription}</span>
                                 </Descriptions.Item>
                             ))
                         }
                     </Descriptions>
                 </Descriptions.Item>
             </Descriptions>
-            </Modal>
+        </Modal>
     </div>;
 };
 
