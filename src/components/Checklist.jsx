@@ -71,8 +71,8 @@ const Checklist = () => {
         },
         {
             title: (<span className='textStyles-small'>Sections</span>),
-            dataIndex: 'sectionLength',
-            key: 'sectionLength',
+            dataIndex: 'sectionCount',
+            key: 'sectionCount',
             render: (text) => (<span className='textStyles-small'>{text ? text : 0}</span>),
         },
         {
@@ -169,7 +169,7 @@ const Checklist = () => {
     return <div>
 
         <div style={{ padding: '20px', marginTop: '10px', borderRadius: '10px' }}>
-            <Row justify="space-between" style={{ marginBottom: '10px' }}>
+            <Row justify="space-between" style={{ marginBottom: '30px' }}>
                 <div>
                     <span className='textStyles-small' style={{ fontSize: '17px', fontWeight: 'bold' }}>
                         Checklist Management
@@ -193,7 +193,12 @@ const Checklist = () => {
                         width: '150px'
                     }}
                     icon={formVisible ? <CloseOutlined /> : <PlusOutlined />}
-                    onClick={() => setFormVisible(!formVisible)}
+                    onClick={() => {
+                        setFormVisible(prevFormVisible => !prevFormVisible);
+                        setSelectedChecklist({});
+                        setIsUpdate(false);
+                        setNoOfSections(1);
+                    }}
                 >
                     <span className='textStyles-small'>
                         {formVisible ? 'Back' : 'New Checklist'}
@@ -204,7 +209,7 @@ const Checklist = () => {
                 formVisible ? (
                     <div style={{ backgroundColor: 'white', padding: '20px', marginTop: '10px', borderRadius: '10px' }}>
                         <span className='textStyles-small' style={{ fontSize: '16px' }}>
-                            New Checklist Configurations
+                            {isUpdate === true ? 'Update Checklist Configurations' : 'New Checklist Configurations'}
                         </span>
                         <Form
                             style={{ marginTop: '20px' }}
@@ -289,7 +294,7 @@ const Checklist = () => {
                                                 <Form.Item
                                                     label={<span className='textStyles-small'>Section {index + 1} Name</span>}
                                                     name={`sectionName${index}`}
-                                                    initialValue={selectedChecklist.sections ? selectedChecklist.sections[index].sectionName : ''}
+                                                    initialValue={selectedChecklist.sections && isUpdate ? selectedChecklist?.sections[index].sectionName : ''}
                                                 >
                                                     <Input style={{ width: '98%' }} />
                                                 </Form.Item>
@@ -307,7 +312,7 @@ const Checklist = () => {
                                                 <Form.Item
                                                     label={<span className='textStyles-small'>Section {index + 1} Description</span>}
                                                     name={`sectionDescription${index}`}
-                                                    initialValue={selectedChecklist.sections[index]?.sectionDescription}
+                                                    initialValue={selectedChecklist.sections && isUpdate ? selectedChecklist?.sections[index]?.sectionDescription : ''}
                                                 >
                                                     <Input
                                                         style={{ width: '100%' }} />
@@ -328,7 +333,7 @@ const Checklist = () => {
                                 <Col span={24}>
                                     {
                                         isUpdate ? (
-                                            <Button type="primary" htmlType="submit" style={{ width: '100px', marginLeft: '10px' }}><span className='textStyles-small'>
+                                            <Button type="primary" htmlType="submit" style={{ width: '150px', marginLeft: '10px' }}><span className='textStyles-small'>
                                                 Update Data</span> </Button>) :
                                             (
                                                 <Button type="primary" htmlType="submit"><span className='textStyles-small'>
@@ -339,13 +344,6 @@ const Checklist = () => {
 
                                     <Button type="default" htmlType="reset" style={{ width: '100px', marginLeft: '10px', marginRight: '10px' }}><span className='textStyles-small'>
                                         Reset</span>
-                                    </Button>
-
-                                    <Button type="primary" danger
-                                        styles={{ width: '100px', marginLeft: '10px', backgroundColor: 'red', borderColor: 'red' }}
-                                        onClick={() => setFormVisible(false)}>
-                                        <span className='textStyles-small'>
-                                            Close Form</span>
                                     </Button>
                                 </Col>
                             </Row>
@@ -408,11 +406,11 @@ const Checklist = () => {
                 <Descriptions.Item label={<span className='textStyles-small'>Sections</span>}>
                     <Descriptions size='small' column={1} bordered>
                         {
-                            selectedChecklist.sections?.map((section, index) => (
+                            selectedChecklist?.sections?.map((section, index) => (
                                 <Descriptions.Item
-                                    label={<span className='textStyles-small'>{section.sectionName}</span>}
+                                    label={<span className='textStyles-small'>{section?.sectionName}</span>}
                                 >
-                                    <span className='textStyles-small'>Section Description: {section.sectionDescription}</span>
+                                    <span className='textStyles-small'>Section Description: {section?.sectionDescription}</span>
                                 </Descriptions.Item>
                             ))
                         }
