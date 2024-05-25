@@ -198,16 +198,16 @@ const ViewForm = () => {
             <span className='textStyles-small'>{selectedChecklist?.description}</span>
           </Descriptions.Item>
           <Descriptions.Item label={<span className='textStyles-small'>Created On</span>}>
-            <span className='textStyles-small'>{selectedChecklist?.createdOn}</span>
+            <span className='textStyles-small'>{selectedChecklist?.createdOn ? new Date(selectedChecklist?.createdOn).toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }) : ''}</span>
           </Descriptions.Item>
           <Descriptions.Item label={<span className='textStyles-small'>Updated On</span>}>
-            <span className='textStyles-small'>{selectedChecklist?.updatedOn}</span>
+            <span className='textStyles-small'>{selectedChecklist?.updatedOn ? new Date(selectedChecklist?.updatedOn).toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }) : ''}</span>
           </Descriptions.Item>
           <Descriptions.Item label={<span className='textStyles-small'>Version</span>}>
             <span className='textStyles-small'>{selectedChecklist?.version}</span>
           </Descriptions.Item>
           <Descriptions.Item label={<span className='textStyles-small'>Active</span>}>
-            <span className='textStyles-small'>{selectedChecklist?.isActive}</span>
+            <span className='textStyles-small'>{selectedChecklist?.isActive === true ? 'Active' : 'Inactive'}</span>
           </Descriptions.Item>
           <Descriptions.Item label={<span className='textStyles-small'>Sections Count</span>}>
             <span className='textStyles-small'>{selectedChecklist?.sectionCount}</span>
