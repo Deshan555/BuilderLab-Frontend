@@ -1,6 +1,6 @@
 const baseDetails = {
-    BASE_URL: 'http://localhost:3001/',  // Added 'http://'
-    CORE_SERVICE_URL: 'http://localhost:3001/',  // Added 'http://'
+    BASE_URL: 'https://onlyforms-backend.onrender.com/',  
+    CORE_SERVICE_URL: 'https://onlyforms-backend.onrender.com/',  // Added 'http://'
     // CORE_SERVICE_URL: 'https://thaprobane-com.onrender.com/thaprobane/core/v01',  // Added 'http://'
     STORAGE_SERVICE_URL: 'https://api.themoviedb.org/3',
     GATEWAY_SERVICE_URL: 'https://api.themoviedb.org/3',
