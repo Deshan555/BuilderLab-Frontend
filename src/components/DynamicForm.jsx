@@ -9,7 +9,7 @@ const { Dragger } = Upload;
 
 
 const formItemLayout = {
-  labelCol: { span: 4 },
+  labelCol: { span: 24 },
   wrapperCol: { span: 24 },
 };
 
