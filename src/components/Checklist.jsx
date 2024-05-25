@@ -125,7 +125,8 @@ const Checklist = () => {
             sections: Array.from({ length: noOfSections }, (_, index) => ({
                 sectionName: values[`sectionName${index}`],
                 sectionDescription: values[`sectionDescription${index}`],
-                sectionIndex: values[`sectionIndex${index}`]
+                sectionIndex: values[`sectionIndex${index}`],
+                sectionID: Math.random().toString(36).substring(7)
             }))
         };
 
@@ -294,9 +295,15 @@ const Checklist = () => {
                                                 <Form.Item
                                                     label={<span className='textStyles-small'>Section {index + 1} Name</span>}
                                                     name={`sectionName${index}`}
-                                                    initialValue={selectedChecklist.sections && isUpdate ? selectedChecklist?.sections[index].sectionName : ''}
+                                                    initialValue={selectedChecklist?.sections && isUpdate ? selectedChecklist?.sections[index]?.sectionName : ''}
                                                 >
-                                                    <Input style={{ width: '98%' }} />
+                                                    <Input
+                                                        disabled={isUpdate ? true : false}
+                                                        style={{
+                                                            width: '98%',
+                                                            color: isUpdate ? 'black' : 'black'
+                                                        }}
+                                                    />
                                                 </Form.Item>
                                             </Col>
                                             <Col span={12}>
@@ -305,7 +312,7 @@ const Checklist = () => {
                                                     name={`sectionIndex${index}`}
                                                     initialValue={index + 1}
                                                 >
-                                                    <Input style={{ width: '98%' }} />
+                                                    <Input disabled={isUpdate ? true : false} style={{ width: '98%' }} />
                                                 </Form.Item>
                                             </Col>
                                             <Col span={24}>
@@ -314,8 +321,7 @@ const Checklist = () => {
                                                     name={`sectionDescription${index}`}
                                                     initialValue={selectedChecklist.sections && isUpdate ? selectedChecklist?.sections[index]?.sectionDescription : ''}
                                                 >
-                                                    <Input
-                                                        style={{ width: '100%' }} />
+                                                    <Input style={{ width: '100%' }} />
                                                 </Form.Item>
                                             </Col>
                                             <Button type="primary" danger
