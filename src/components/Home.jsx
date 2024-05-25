@@ -82,12 +82,15 @@ function Home() {
 
 
   const fetchAllChecklists = async () => {
+    setIsLoading(true);
     try {
       const response = await apiExecutions.getChecklistsFetch();
       if (response?.data !== null) {
         setCheckList(response);
+        setIsLoading(false);
       }
     } catch (error) {
+      setIsLoading(false);
       console.error('An error occurred while fetching the checklists:', error);
     }
   }
@@ -244,7 +247,7 @@ function Home() {
             </Breadcrumb>
           </div>
         </Row>
-
+        <Spin spinning={isLoading} tip="Loading checklists...">
         <div style={{ marginTop: "10px", backgroundColor: "white", padding: "20px", borderRadius: "10px" }}>
           <div style={{ marginTop: "10px", backgroundColor: "#f5f5f5", padding: "10px", borderRadius: "10px" }}>
 
@@ -270,8 +273,8 @@ function Home() {
           </div>
           <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
         </div>
+        </Spin>
       </div>
-
       <Modal
         title={<span className="textStyles-small" style={{ fontSize: "16px" }}>
           Create New Section
