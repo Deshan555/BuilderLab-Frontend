@@ -299,7 +299,7 @@ const Checklist = () => {
                                                     initialValue={selectedChecklist?.sections && isUpdate ? selectedChecklist?.sections[index]?.sectionName : ''}
                                                 >
                                                     <Input
-                                                        disabled={isUpdate ? true : false}
+                                                        disabled={isUpdate && selectedChecklist?.sections[index]?.sectionName ? true : false}
                                                         style={{
                                                             width: '98%',
                                                             color: isUpdate ? 'black' : 'black'
