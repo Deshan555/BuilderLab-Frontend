@@ -126,6 +126,7 @@ const Checklist = () => {
                 sectionName: values[`sectionName${index}`],
                 sectionDescription: values[`sectionDescription${index}`],
                 sectionIndex: values[`sectionIndex${index}`],
+                // TODO : want to implement sectionID creation logic here
                 sectionID: Math.random().toString(36).substring(7)
             }))
         };
