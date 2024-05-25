@@ -49,13 +49,13 @@ const Checklist = () => {
             title: (<span className='textStyles-small'>Created On</span>),
             dataIndex: 'createdOn',
             key: 'createdOn',
-            render: (text) => (<span className='textStyles-small'>{text}</span>),
+            render: (text) => (<span className='textStyles-small'>{text ? new Date(text).toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }) : ''}</span>),
         },
         {
             title: (<span className='textStyles-small'>Updated On</span>),
             dataIndex: 'updatedOn',
             key: 'updatedOn',
-            render: (text) => (<span className='textStyles-small'>{text}</span>),
+            render: (text) => (<span className='textStyles-small'>{text ? new Date(text).toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }) : ''}</span>),
         },
         {
             title: (<span className='textStyles-small'>Version</span>),
@@ -67,7 +67,7 @@ const Checklist = () => {
             title: (<span className='textStyles-small'>Active</span>),
             dataIndex: 'isActive',
             key: 'isActive',
-            render: (text) => (<span className='textStyles-small'>{text}</span>),
+            render: (text) => (<span className='textStyles-small'>{text ? 'Yes' : 'No'}</span>),
         },
         {
             title: (<span className='textStyles-small'>Sections</span>),
@@ -125,7 +125,9 @@ const Checklist = () => {
             sections: Array.from({ length: noOfSections }, (_, index) => ({
                 sectionName: values[`sectionName${index}`],
                 sectionDescription: values[`sectionDescription${index}`],
-                sectionIndex: values[`sectionIndex${index}`]
+                sectionIndex: values[`sectionIndex${index}`],
+                // TODO : want to implement sectionID creation logic here
+                sectionID: Math.random().toString(36).substring(7)
             }))
         };
 
@@ -294,9 +296,15 @@ const Checklist = () => {
                                                 <Form.Item
                                                     label={<span className='textStyles-small'>Section {index + 1} Name</span>}
                                                     name={`sectionName${index}`}
-                                                    initialValue={selectedChecklist.sections && isUpdate ? selectedChecklist?.sections[index].sectionName : ''}
+                                                    initialValue={selectedChecklist?.sections && isUpdate ? selectedChecklist?.sections[index]?.sectionName : ''}
                                                 >
-                                                    <Input style={{ width: '98%' }} />
+                                                    <Input
+                                                        disabled={isUpdate ? true : false}
+                                                        style={{
+                                                            width: '98%',
+                                                            color: isUpdate ? 'black' : 'black'
+                                                        }}
+                                                    />
                                                 </Form.Item>
                                             </Col>
                                             <Col span={12}>
@@ -305,7 +313,7 @@ const Checklist = () => {
                                                     name={`sectionIndex${index}`}
                                                     initialValue={index + 1}
                                                 >
-                                                    <Input style={{ width: '98%' }} />
+                                                    <Input disabled={isUpdate ? true : false} style={{ width: '98%' }} />
                                                 </Form.Item>
                                             </Col>
                                             <Col span={24}>
@@ -314,8 +322,7 @@ const Checklist = () => {
                                                     name={`sectionDescription${index}`}
                                                     initialValue={selectedChecklist.sections && isUpdate ? selectedChecklist?.sections[index]?.sectionDescription : ''}
                                                 >
-                                                    <Input
-                                                        style={{ width: '100%' }} />
+                                                    <Input style={{ width: '100%' }} />
                                                 </Form.Item>
                                             </Col>
                                             <Button type="primary" danger
@@ -386,16 +393,16 @@ const Checklist = () => {
                     <span className='textStyles-small'>{selectedChecklist.description}</span>
                 </Descriptions.Item>
                 <Descriptions.Item label={<span className='textStyles-small'>Created On</span>}>
-                    <span className='textStyles-small'>{selectedChecklist.createdOn}</span>
+                    <span className='textStyles-small'>{selectedChecklist.createdOn ? new Date(selectedChecklist.createdOn).toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }) : ''}</span>
                 </Descriptions.Item>
                 <Descriptions.Item label={<span className='textStyles-small'>Updated On</span>}>
-                    <span className='textStyles-small'>{selectedChecklist.updatedOn}</span>
+                    <span className='textStyles-small'>{selectedChecklist.updatedOn ? new Date(selectedChecklist.updatedOn).toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }) : ''}</span>
                 </Descriptions.Item>
                 <Descriptions.Item label={<span className='textStyles-small'>Version</span>}>
                     <span className='textStyles-small'>{selectedChecklist.version}</span>
                 </Descriptions.Item>
                 <Descriptions.Item label={<span className='textStyles-small'>Active</span>}>
-                    <span className='textStyles-small'>{selectedChecklist.isActive}</span>
+                    <span className='textStyles-small'>{selectedChecklist.isActive === true ? 'Yes' : 'No'}</span>
                 </Descriptions.Item>
                 <Descriptions.Item label={<span className='textStyles-small'>Sections Count</span>}>
                     <span className='textStyles-small'>{selectedChecklist.sectionCount}</span>
