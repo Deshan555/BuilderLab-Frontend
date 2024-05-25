@@ -1,0 +1,41 @@
+{
+    "_id": {
+        "$oid": "6650af07504bb48accbe1a3b"
+    },
+    "name": "Preventive Maintenance V02",
+    "description": "A checklist for preventive maintenance of a telecommunication site",
+    "version": "1.0.0",
+    "isActive": true,
+    "checklistID": "telecom-maintenance-002",
+    "updatedOn": "2022-01-01T00:00:00Z",
+    "createdOn": "2021-12-01T00:00:00Z",
+    "sectionCount": {
+        "$numberInt": "6"
+    },
+    "sections": [
+        {
+            "sectionName": "Equipment Inspection",
+            "sectionDescription": "Check the physical condition of all equipment. Look for signs of damage, wear and tear, or potential failure."
+        },
+        {
+            "sectionName": "Performance Testing",
+            "sectionDescription": "Test the performance of all systems. Ensure they are operating within acceptable parameters and meeting performance standards."
+        },
+        {
+            "sectionName": "Signal Quality Assessment",
+            "sectionDescription": "Assess the quality of the signal being transmitted and received. Check for any interference or signal loss."
+        },
+        {
+            "sectionName": "Power Supply Check",
+            "sectionDescription": "Check the status of power supply units. Ensure they are functioning properly and providing adequate power."
+        },
+        {
+            "sectionName": "Security Check",
+            "sectionDescription": "Inspect the site for any security breaches. Check the integrity of locks, alarms, and surveillance systems."
+        },
+        {
+            "sectionName": "Cleanup",
+            "sectionDescription": "Clean the site and equipment. Remove any dust, debris, or foreign objects that could interfere with operation."
+        }
+    ]
+}

@@ -1,0 +1,108 @@
+{
+    "_id": {
+        "$oid": "66516e464a5ea6a1e2e64b50"
+    },
+    "checklistName": "telecom-maintenance-002",
+    "sessionName": "Power Supply Check",
+    "isActive": "true",
+    "isDraft": "false",
+    "version": "V1.1",
+    "sessionDescription": "- **Inspection and testing** (`inspection_and_testing`): Updated the value to make it more human-readable, covering tasks like visual inspection and functional testing.\n- **Cleaning and environmental maintenance** (`cleaning_and_environmental_maintenance`): Updated the value to improve readability, including tasks like cleaning equipment and maintaining environmental control systems.\n- **Power system maintenance** (`power_system_maintenance`): Updated the value for better clarity, including tasks like checking batteries, generators, and power supply units.\n- **Software and firmware updates** (`software_and_firmware_updates`): Updated the value to make it more understandable, including tasks like updating software and firmware, and applying patches.\n- **Cable and connector maintenance** (`cable_and_connector_maintenance`): Updated the value to enhance readability, covering tasks like inspecting and managing cables and connectors.\n- **Site infrastructure maintenance** (`site_infrastructure_maintenance`): Updated the value for better clarity, including tasks like inspecting antennas, towers, and grounding systems.\n- **Documentation and reporting** (`documentation_and_reporting`): Updated the value to make it more user-friendly, covering tasks like maintaining maintenance logs and generating reports",
+    "serviceType": [
+        "gen_service",
+        "battery_bank_service",
+        "rectifier_service"
+    ],
+    "changeLog": "# Changelog for Preventive Maintenance Checklist Update\n\n## [1.1.0] - 2024-05-25\n\n### Added\n- Added new service types to the preventive maintenance checklist:\n  - `gen_service` : \"Gen service\"\n  - `rectifier_service` : \"Rectifier service\"\n  - `battery_bank_service` : \"Battery bank service\"\n\n### Changed\n- Updated existing service types to have human-readable values:\n  - `inspection_and_testing` : \"Inspection and testing\"\n  - `cleaning_and_environmental_maintenance` : \"Cleaning and environmental maintenance\"\n  - `power_system_maintenance` : \"Power system maintenance\"\n  - `software_and_firmware_updates` : \"Software and firmware updates\"\n  - `cable_and_connector_maintenance` : \"Cable and connector maintenance\"\n  - `site_infrastructure_maintenance` : \"Site infrastructure maintenance\"\n  - `documentation_and_reporting` : \"Documentation and reporting\"\n",
+    "template": [
+        {
+            "type": "date",
+            "required": false,
+            "label": "Date Field",
+            "className": "form-control",
+            "name": "date-1716612374290-0",
+            "access": false,
+            "subtype": "date"
+        },
+        {
+            "type": "date",
+            "required": false,
+            "label": "Date Field",
+            "className": "form-control",
+            "name": "date-1716612376127-0",
+            "access": false,
+            "subtype": "date"
+        },
+        {
+            "type": "file",
+            "required": false,
+            "label": "File Upload",
+            "className": "form-control",
+            "name": "file-1716612377751-0",
+            "access": false,
+            "multiple": false
+        },
+        {
+            "type": "number",
+            "required": false,
+            "label": "Number",
+            "className": "form-control",
+            "name": "number-1716612379516-0",
+            "access": false,
+            "subtype": "number"
+        },
+        {
+            "type": "select",
+            "required": false,
+            "label": "Select",
+            "className": "form-control",
+            "name": "select-1716612380985-0",
+            "access": false,
+            "multiple": false,
+            "values": [
+                {
+                    "label": "Option 1",
+                    "value": "option-1",
+                    "selected": true
+                },
+                {
+                    "label": "Option 2",
+                    "value": "option-2",
+                    "selected": false
+                },
+                {
+                    "label": "Option 3",
+                    "value": "option-3",
+                    "selected": false
+                }
+            ]
+        },
+        {
+            "type": "textarea",
+            "required": false,
+            "label": "Text Area",
+            "className": "form-control",
+            "name": "textarea-1716612383855-0",
+            "access": false,
+            "subtype": "textarea"
+        },
+        {
+            "type": "text",
+            "required": false,
+            "label": "Text Field",
+            "className": "form-control",
+            "name": "text-1716612382856-0",
+            "access": false,
+            "subtype": "text"
+        },
+        {
+            "type": "text",
+            "required": false,
+            "label": "Text Field",
+            "className": "form-control",
+            "name": "text-1716612382019-0",
+            "access": false,
+            "subtype": "text"
+        }
+    ]
+}
