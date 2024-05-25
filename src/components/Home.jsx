@@ -25,11 +25,26 @@ function Home() {
   const [checkList, setCheckList] = React.useState([]);
   const [selectedChecklist, setSelectedChecklist] = React.useState("telecom-maintenance-001");
   const [openModal, setOpenModal] = React.useState(false);
-
+  const [isActive, setIsactive] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   useEffect(() => {
     fetchAllChecklists();
   }, []);
+
+  const preventive_maintenance_tasks = {
+    gen_service: "Gen service",
+    rectifier_service: "Rectifier service",
+    battery_bank_service: "Battery bank service",
+    inspection_and_testing: "Inspection and testing",
+    cleaning_and_environmental_maintenance: "Cleaning and environmental maintenance",
+    power_system_maintenance: "Power system maintenance",
+    software_and_firmware_updates: "Software and firmware updates",
+    cable_and_connector_maintenance: "Cable and connector maintenance",
+    site_infrastructure_maintenance: "Site infrastructure maintenance",
+    documentation_and_reporting: "Documentation and reporting"
+};
+
 
   useEffect(() => {
     let intervalId = null;
@@ -98,8 +113,6 @@ function Home() {
         </div>
       )
     },
-
-
     {
       key: '2',
       label: (
@@ -134,18 +147,31 @@ function Home() {
   ];
 
   const onFinish = (values) => {
-    const { checklistName, sessionName, sessionIndex, isActive, isDraft, version, sessionDescription } = values;
-    const sessionJson = {
-      checklistName,
-      sessionName,
-      sessionIndex,
-      isActive,
-      isDraft,
-      version,
-      sessionDescription,
-      template: formDataJson
-    };
-    createNewChecklist(sessionJson);
+    const { checklistName, sessionName, isActive, isDraft, version, sessionDescription, serviceType, changeLog } = values;
+    if (formDataJson.length === 0) {
+      notification.open({
+        message: 'Checklist',
+        description:
+          'Please create a form to save the checklist',
+        icon: <CloseOutlined style={{ color: '#108ee9' }} />,
+      });
+      return;
+    } else {
+      const sessionJson = {
+        checklistName,
+        sessionName,
+        isActive,
+        isDraft,
+        version,
+        sessionDescription,
+        serviceType,
+        changeLog,
+        template: formDataJson
+      };
+      console.log(serviceType);
+      console.log(sessionJson);
+      createNewChecklist(sessionJson);
+    }
   };
 
   const draftSave = async () => {
@@ -174,6 +200,7 @@ function Home() {
   }
 
   const createNewChecklist = async (data) => {
+    setIsLoading(true);
     try {
       const response = await apiExecutions.postChecklistsFetch(data);
       if (response.acknowledged === true) {
@@ -183,6 +210,7 @@ function Home() {
             'Checklist created successfully',
           icon: <CheckOutlined style={{ color: '#108ee9' }} />,
         });
+        setIsLoading(false);
         setOpenModal(false);
       }
     } catch (error) {
@@ -193,6 +221,7 @@ function Home() {
           'Checklist creation failed',
         icon: <CloseOutlined style={{ color: '#108ee9' }} />,
       });
+      setIsLoading(false);
     }
   }
 
@@ -244,7 +273,7 @@ function Home() {
       </div>
 
       <Modal
-        title={<span className="textStyles-small" style={{fontSize: "16px"}}>
+        title={<span className="textStyles-small" style={{ fontSize: "16px" }}>
           Create New Section
         </span>}
         visible={openModal}
@@ -253,128 +282,152 @@ function Home() {
         destroyOnClose={true}
         width={800}
       >
-        <Form
-          form={form}
-          layout="vertical"
-          name="basic"
-          initialValues={{ remember: true }}
-          onFinish={onFinish}
-          style={{marginTop: "20px"}}
-        >
-          <Row>
-            <Col span={12}>
-              <Form.Item
-                label={<span className="textStyles-small">Checklist Name</span>}
-                name="checklistName"
-                rules={[{ required: true, message: 'Please input the checklist name!' }]}
-              >
-                <Select
-                  placeholder="Choose a checklist"
-                  style={{ width: "99%" }}
-                  onChange={(value) => setSelectedChecklist(value)}
+        <Spin spinning={isLoading} tip="Creating new section...">
+          <Form
+            form={form}
+            layout="vertical"
+            name="basic"
+            initialValues={{ remember: true }}
+            onFinish={onFinish}
+            style={{ marginTop: "20px" }}
+          >
+            <Row>
+              <Col span={12}>
+                <Form.Item
+                  label={<span className="textStyles-small">Checklist Name</span>}
+                  name="checklistName"
+                  rules={[{ required: true, message: 'Please input the checklist name!' }]}
                 >
-                  {checkList?.map((item, index) => (
-                    <Select.Option 
-                    key={index} 
-                    value={item?.checklistID} 
-                    className="textStyles-small">
-                      {item?.name}
-                    </Select.Option>
-                  ))}
-                </Select>
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label={<span className="textStyles-small">Section Name</span>}
-                name="sessionName"
-                rules={[{ required: true, message: 'Please input the session name!' }]}
-              >
-                <Select style={{ width: '99%' }}>
-                  {
-                    selectedChecklist !== null ? (
-                      checkList?.map((item) => {
-                        if (item?.checklistID === selectedChecklist) {
-                          return item?.sections.map((section) => (
-                            <Select.Option key={section?.sectionName} value={section?.sectionName}>
-                              {section?.sectionName}
-                            </Select.Option>
-                          ))
-                        }
-                        return null;
-                      })
-                    ) : null
-                  }
-                </Select>
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row>
-            <Col span={12}>
-              <Form.Item
-                label={<span className="textStyles-small">Is Active</span>}
-                name="isActive"
-                rules={[{ required: true, message: 'Please select if active!' }]}
-              >
-                <Select style={{ width: '99%' }}>
-                  <Select.Option value="true">True</Select.Option>
-                  <Select.Option value="false">False</Select.Option>
-                </Select>
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label={<span className="textStyles-small">Is Draft</span>}
-                name="isDraft"
-                rules={[{ required: true, message: 'Please select if draft!' }]}
-              >
-                <Select style={{ width: '99%' }}>
-                  <Select.Option value="true">True</Select.Option>
-                  <Select.Option value="false">False</Select.Option>
-                </Select>
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row>
-            <Col span={12}>
-              <Form.Item
-                label={<span className="textStyles-small">Version</span>}
-                name="version"
-                rules={[{ required: true, message: 'Please input the version!' }]}
-              >
-                <Input style={{ width: '99%' }} />
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row>
-            <Col span={12}>
-              <Form.Item
-                label={<span className="textStyles-small">Section Description</span>}
-                name="sessionDescription"
-                rules={[{ required: true, message: 'Please input the session description!' }]}
-              >
-                <Input.TextArea rows={4} style={{ width: '99%' }} />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label={<span className="textStyles-small">Change Log</span>}
-                name="changeLog"
-              >
-                <Input.TextArea rows={4} style={{ width: '99%' }} />
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row>
-            <Button type="primary" htmlType="submit">
-              <span className="textStyles-small">Save Session</span>
-            </Button>
-            <Button type="primary" danger style={{ marginLeft: "10px" }} onClick={() => { setOpenModal(false) }}>
-              <span className="textStyles-small">Cancel and Exit</span>
-            </Button>
-          </Row>
-
-        </Form>
+                  <Select
+                    allowClear
+                    mode="single"
+                    placeholder="Choose a checklist"
+                    style={{ width: "99%" }}
+                    onChange={(value) => setSelectedChecklist(value)}
+                  >
+                    {checkList?.map((item, index) => (
+                      <Select.Option
+                        key={index}
+                        value={item?.checklistID}
+                        className="textStyles-small">
+                        {item?.name}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  label={<span className="textStyles-small">Section Name</span>}
+                  name="sessionName"
+                  rules={[{ required: true, message: 'Please input the session name!' }]}
+                >
+                  <Select style={{ width: '99%' }} allowClear>
+                    {
+                      selectedChecklist !== null ? (
+                        checkList?.map((item) => {
+                          if (item?.checklistID === selectedChecklist) {
+                            return item?.sections.map((section) => (
+                              <Select.Option key={section?.sectionName} value={section?.sectionName}>
+                                {section?.sectionName}
+                              </Select.Option>
+                            ))
+                          }
+                          return null;
+                        })
+                      ) : null
+                    }
+                  </Select>
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row>
+              <Col span={12}>
+                <Form.Item
+                  label={<span className="textStyles-small">Is Active</span>}
+                  name="isActive"
+                  rules={[{ required: true, message: 'Please select if active!' }]}
+                  onChange={(value) => setIsactive(value)}
+                >
+                  <Select style={{ width: '99%' }}>
+                    <Select.Option value="true">True</Select.Option>
+                    <Select.Option value="false">False</Select.Option>
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  label={<span className="textStyles-small">Is Draft</span>}
+                  name="isDraft"
+                  rules={[{ required: true, message: 'Please select if draft!' }]}
+                  initialValue={isActive === false ? "false" : "true"}
+                >
+                  <Select style={{ width: '99%' }}
+                    disabled={isActive === false ? false : true}>
+                    <Select.Option value="true">True</Select.Option>
+                    <Select.Option value="false">False</Select.Option>
+                  </Select>
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row>
+              <Col span={12}>
+                <Form.Item
+                  label={<span className="textStyles-small">Version</span>}
+                  name="version"
+                  rules={[{ required: true, message: 'Please input the version!' }]}
+                >
+                  <Input style={{ width: '99%' }} />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  label={<span className="textStyles-small">Service Type</span>}
+                  name="serviceType"
+                  rules={[{ required: true, message: 'Please input the service type!' }]}
+                >
+                  <Select style={{ width: '99%' }} mode="multiple" allowClear>
+                    {
+                      Object.keys(preventive_maintenance_tasks).map((item, index) => (
+                        <Select.Option key={index}
+                          value={item}>
+                          {preventive_maintenance_tasks[item]}
+                        </Select.Option>
+                      ))
+                    }
+                  </Select>
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row>
+              <Col span={12}>
+                <Form.Item
+                  label={<span className="textStyles-small">Section Description</span>}
+                  name="sessionDescription"
+                  rules={[{ required: true, message: 'Please input the session description!' }]}
+                >
+                  <Input.TextArea rows={4} style={{ width: '99%' }} />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  label={<span className="textStyles-small">Change Log</span>}
+                  name="changeLog"
+                >
+                  <Input.TextArea rows={4} style={{ width: '99%' }} />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row>
+              <Button type="primary" htmlType="submit">
+                <span className="textStyles-small">Save Session</span>
+              </Button>
+              <Button type="primary" danger style={{ marginLeft: "10px" }} onClick={() => { setOpenModal(false) }}>
+                <span className="textStyles-small">Cancel and Exit</span>
+              </Button>
+            </Row>
+          </Form>
+        </Spin>
       </Modal>
     </div>
   );
