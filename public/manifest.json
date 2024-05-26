@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Builder Lab",
+  "name": "A dynamic frontend application for managing checklists and templates. This project utilizes the backend Checklist API for data operations, provides a drag-and-drop interface, and includes a form generator for JSON processing and design.",
   "icons": [
     {
       "src": "favicon.ico",
