@@ -43,7 +43,7 @@ function Home() {
     cable_and_connector_maintenance: "Cable and connector maintenance",
     site_infrastructure_maintenance: "Site infrastructure maintenance",
     documentation_and_reporting: "Documentation and reporting"
-};
+  };
 
 
   useEffect(() => {
@@ -248,31 +248,30 @@ function Home() {
           </div>
         </Row>
         <Spin spinning={isLoading} tip="Loading checklists...">
-        <div style={{ marginTop: "10px", backgroundColor: "white", padding: "20px", borderRadius: "10px" }}>
-          <div style={{ marginTop: "10px", backgroundColor: "#f5f5f5", padding: "10px", borderRadius: "10px" }}>
+          <div style={{ marginTop: "10px", backgroundColor: "white", padding: "20px", borderRadius: "10px" }}>
+            <div style={{ marginTop: "10px", backgroundColor: "#f5f5f5", padding: "10px", borderRadius: "10px" }}>
+              <Button
+                type="primary"
+                icon={<PlusOutlined />}
+                style={{ marginLeft: "10px" }}
+                onClick={() => {
+                  draftSave();
+                }}
+              > <span className="textStyles-small">Save as Draft</span>
+              </Button>
 
-            <Button
-              type="primary"
-              icon={<PlusOutlined />}
-              style={{ marginLeft: "10px" }}
-              onClick={() => {
-                draftSave();
-              }}
-            > <span className="textStyles-small">Save as Draft</span>
-            </Button>
-
-            <Button
-              type="primary"
-              icon={<PlusOutlined />}
-              style={{ marginLeft: "10px", backgroundColor: "#52c41a", borderColor: "#52c41a" }}
-              onClick={() => {
-                setOpenModal(true);
-              }}
-            > <span className="textStyles-small">Save And Publish</span>
-            </Button>
+              <Button
+                type="primary"
+                icon={<PlusOutlined />}
+                style={{ marginLeft: "10px", backgroundColor: "#52c41a", borderColor: "#52c41a" }}
+                onClick={() => {
+                  setOpenModal(true);
+                }}
+              > <span className="textStyles-small">Save And Publish</span>
+              </Button>
+            </div>
+            <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
           </div>
-          <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
-        </div>
         </Spin>
       </div>
       <Modal
