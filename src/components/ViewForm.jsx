@@ -2,17 +2,22 @@ import $ from "jquery";
 import JSONInput from 'react-json-editor-ajrm';
 import locale from 'react-json-editor-ajrm/locale/en';
 import DynamicForm from './DynamicForm';
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { apiExecutions } from './../api/api-call';
 import ReactDOM from "react-dom";
 import "./../styles.css";
 import { Badge, Breadcrumb, Checkbox, InputNumber, Spin, Avatar, Notification, notification, Card, Skeleton, Switch, Table, Select, Input, Button, Row, Upload, Col, Dropdown, Tag, Modal, Steps, message, Form, DatePicker, TimePicker, Descriptions, Image, Tabs, Collapse } from 'antd';
 import { ClockCircleOutlined ,HighlightOutlined, PlusOutlined, DownOutlined, UploadOutlined, CheckOutlined, CloseOutlined, LoadingOutlined, MinusCircleOutlined, PlusCircleOutlined, DeleteOutlined, EditOutlined, SaveOutlined, ExclamationCircleOutlined, EyeOutlined } from '@ant-design/icons';
 import "./../formBuilder.css";
+import EditTemplates from "./EditTemplates";
+import FormBuilder from "./Formbuilder";
+import { findAllByTestId } from "@testing-library/react";
 
 const { Panel } = Collapse;
 
 const ViewForm = () => {
+  const navigate = useNavigate();
   const [checklists, setChecklists] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
   const [sections, setSections] = React.useState([]);
@@ -21,11 +26,12 @@ const ViewForm = () => {
   const [selectedSection, setSelectedSection] = React.useState(null);
   const [openViewModal, setOpenViewModal] = React.useState(false);
   const [checklistModal, setChecklistModal] = React.useState(false);
+  const [templateUpdateModal, setTemplateUpdateModal] =  React.useState(false);
 
   useEffect(() => {
     getChecklists();
   }, []);
-
+  
   const getChecklists = async () => {
     setLoading(true);
     const response = await apiExecutions.getChecklistsFetch();
@@ -44,6 +50,10 @@ const ViewForm = () => {
 
   const checklistModalClose = () => {
     setChecklistModal(false);
+  }
+
+  const closetemplateUpdateModal = () => {
+    setTemplateUpdateModal(false);
   }
 
   const getSections = async (id) => {
@@ -122,7 +132,7 @@ const ViewForm = () => {
       ),
     },
     {
-      title: <span className='textStyles-small'>Service Type</span>,
+      title: <span className='textStyles-small'>Service Types</span>,
       dataIndex: 'serviceType',
       key: 'serviceType',
       render: (text) => (
@@ -134,11 +144,19 @@ const ViewForm = () => {
       ),
     },
     {
+      title: <span className='textStyles-small'>Active</span>,
+      dataIndex: 'changeLog',
+      key: 'changeLog',
+      render: (text) => (
+        <span className='textStyles-small'>{text}</span>
+      ),
+    },
+    {
       title: <span className='textStyles-small'>Actions</span>,
       dataIndex: 'actions',
       key: 'actions',
       render: (text, record) => (
-        <div>
+        <div style={{ display: 'flex' }}>
           <Button
             type='primary'
             size="small"
@@ -150,6 +168,21 @@ const ViewForm = () => {
               getSections(record.checklistName);
               setSelectedSection(record?.sessionName);
               setOpenViewModal(true);
+            }}
+          />
+          
+          <Button
+            type='primary'
+            size="small"
+            shape="circle"
+            icon={<EditOutlined />}
+            style={{ marginRight: '10px' }}
+            onClick={() => {
+              // <Route path="/edittemplates/:id" element={<EditTemplates />} />
+              // history.push(`/edittemplates/${record?.uniqueId}`);
+              //navigate(`/edittemplates/${record?.uniqueId}`);
+              setSection(record);
+              setTemplateUpdateModal(true);
             }}
           />
         </div>
@@ -399,6 +432,7 @@ const ViewForm = () => {
         onOk={() => { viewModalClose() }}
         onCancel={() => { viewModalClose() }}
         footer={null}
+        destroyOnClose={true}
       >
         <Tabs defaultActiveKey="1" items={slider} onChange={onChange} />
       </Modal>
@@ -410,9 +444,23 @@ const ViewForm = () => {
         onOk={() => { checklistModalClose() }}
         onCancel={() => { checklistModalClose() }}
         footer={null}
+        destroyOnClose={true}
       >
         <Collapse items={checklistBuild} style={{ marginTop: '20px' }} />
       </Modal>
+
+      <Modal
+        title={<span style={{ fontSize: '16px', fontWeight: 'bold' }} className='textStyles-small'>Template Update</span>}
+        visible={templateUpdateModal}
+        width={1200}
+        onOk={() => { closetemplateUpdateModal() }}
+        onCancel={() => { closetemplateUpdateModal() }}
+        footer={null}
+        destroyOnClose={true}
+      >
+        <FormBuilder formData={section?.template ? section?.template : []} />
+      </Modal>
+      
 
     </div>
   );
