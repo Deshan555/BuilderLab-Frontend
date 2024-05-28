@@ -43,7 +43,7 @@ function Home() {
     cable_and_connector_maintenance: "Cable and connector maintenance",
     site_infrastructure_maintenance: "Site infrastructure maintenance",
     documentation_and_reporting: "Documentation and reporting"
-};
+  };
 
 
   useEffect(() => {
@@ -228,6 +228,19 @@ function Home() {
     }
   }
 
+  const downloadStateAsJson = () => {
+    const stateJson = JSON.stringify(formDataJson);
+    const blob = new Blob([stateJson], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'template'+ new Date().getTime() + '.json';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    message.success('Template downloaded successfully');
+  };
+
   return (
     <div className="bg-gray-100 p-4">
       <div style={{ padding: '20px', borderRadius: '10px' }}>
@@ -248,31 +261,50 @@ function Home() {
           </div>
         </Row>
         <Spin spinning={isLoading} tip="Loading checklists...">
-        <div style={{ marginTop: "10px", backgroundColor: "white", padding: "20px", borderRadius: "10px" }}>
-          <div style={{ marginTop: "10px", backgroundColor: "#f5f5f5", padding: "10px", borderRadius: "10px" }}>
+          <div style={{ marginTop: "10px", backgroundColor: "white", padding: "20px", borderRadius: "10px" }}>
+            <div style={{ marginTop: "10px", backgroundColor: "#f5f5f5", padding: "10px", borderRadius: "10px" }}>
 
-            <Button
-              type="primary"
-              icon={<PlusOutlined />}
-              style={{ marginLeft: "10px" }}
-              onClick={() => {
-                draftSave();
-              }}
-            > <span className="textStyles-small">Save as Draft</span>
-            </Button>
 
-            <Button
-              type="primary"
-              icon={<PlusOutlined />}
-              style={{ marginLeft: "10px", backgroundColor: "#52c41a", borderColor: "#52c41a" }}
-              onClick={() => {
-                setOpenModal(true);
-              }}
-            > <span className="textStyles-small">Save And Publish</span>
-            </Button>
+              <Button
+                type="primary"
+                icon={<PlusOutlined />}
+                style={{ marginLeft: "10px", backgroundColor: "#52c41a", borderColor: "#52c41a" }}
+                onClick={() => {
+                  setOpenModal(true);
+                }}
+              > <span className="textStyles-small">Save And Publish</span>
+              </Button>
+
+              {
+                formDataJson !== null && formDataJson.length > 0 ? (
+                  <>
+                                <Button
+                type="primary"
+                icon={<PlusOutlined />}
+                style={{ marginLeft: "10px" }}
+                onClick={() => {
+                  draftSave();
+                }}
+              > <span className="textStyles-small">Save as Draft</span>
+              </Button>
+
+              <Button
+                type="primary"
+                icon={<SaveOutlined />}
+                style={{ marginLeft: "10px" }}
+                onClick={() => {
+                  downloadStateAsJson();
+                }}
+              > <span className="textStyles-small">Download Template</span>
+              </Button>
+                  </>
+                ): null
+              }
+
+
+            </div>
+            <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
           </div>
-          <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
-        </div>
         </Spin>
       </div>
       <Modal
