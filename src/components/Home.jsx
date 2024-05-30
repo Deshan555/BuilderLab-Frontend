@@ -23,7 +23,7 @@ function Home() {
   const fb = useRef();
   const [formDataJson, setFormDataJson] = React.useState([]);
   const [checkList, setCheckList] = React.useState([]);
-  const [selectedChecklist, setSelectedChecklist] = React.useState("telecom-maintenance-001");
+  const [selectedChecklist, setSelectedChecklist] = React.useState(null);
   const [openModal, setOpenModal] = React.useState(false);
   const [isActive, setIsactive] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
@@ -150,8 +150,25 @@ function Home() {
   ];
 
   const onFinish = (values) => {
-    const { checklistName, sessionName, isActive, isDraft, version, sessionDescription, serviceType, changeLog } = values;
-    if (formDataJson.length === 0) {
+    const { checklistName, sessionName, isActive, isDraft, sessionDescription, serviceType, changeLog } = values;
+    let sectionID = null;
+    let sectionName = null;
+    let sectionGroup = null;
+    let checkListUniqueName = selectedChecklist;
+    let checkListIDNumber = null;
+
+    checkList.map((item) => {
+      if (item?.checklistID === selectedChecklist) {
+        checkListIDNumber = item?.checklistID;
+        item?.sections.map((section) => {
+          if (section?.sectionID === sessionName) {
+            sectionID = section?.sectionID;
+            sectionName = section?.sectionName;
+            sectionGroup = section?.groupID;
+          }
+        });
+      }});
+      if (formDataJson.length === 0) {
       notification.open({
         message: 'Checklist',
         description:
@@ -161,18 +178,20 @@ function Home() {
       return;
     } else {
       const sessionJson = {
-        checklistName,
-        sessionName,
+        checklistName: checkListUniqueName,
+        checklistID: checkListIDNumber,
+        section : {
+          sectionID,
+          sectionName,
+          sectionGroup
+        },
         isActive,
         isDraft,
-        version,
         sessionDescription,
         serviceType,
         changeLog,
         template: formDataJson
       };
-      console.log(serviceType);
-      console.log(sessionJson);
       createNewChecklist(sessionJson);
     }
   };
@@ -363,7 +382,7 @@ function Home() {
                         checkList?.map((item) => {
                           if (item?.checklistID === selectedChecklist) {
                             return item?.sections.map((section) => (
-                              <Select.Option key={section?.sectionName} value={section?.sectionName}>
+                              <Select.Option key={section?.sectionID} value={section?.sectionID}>
                                 {section?.sectionName}
                               </Select.Option>
                             ))
@@ -390,32 +409,23 @@ function Home() {
                   </Select>
                 </Form.Item>
               </Col>
-              <Col span={12}>
-                <Form.Item
-                  label={<span className="textStyles-small">Is Draft</span>}
-                  name="isDraft"
-                  rules={[{ required: true, message: 'Please select if draft!' }]}
-                  initialValue={isActive === false ? "false" : "true"}
-                >
-                  <Select style={{ width: '99%' }}
-                    disabled={isActive === false ? false : true}>
-                    <Select.Option value="true">True</Select.Option>
-                    <Select.Option value="false">False</Select.Option>
-                  </Select>
-                </Form.Item>
-              </Col>
+                  <Col span={12}>
+                  <Form.Item
+                    label={<span className="textStyles-small">Is Draft</span>}
+                    name="isDraft"
+                    rules={[{ required: true, message: 'Please select if draft!' }]}
+                    initialValue={isActive === false ? "false" : "true"}
+                  >
+                    <Select style={{ width: '99%' }}
+                      disabled={isActive === false ? false : true}>
+                      <Select.Option value="true">True</Select.Option>
+                      <Select.Option value="false">False</Select.Option>
+                    </Select>
+                  </Form.Item>
+                </Col>
             </Row>
             <Row>
-              <Col span={12}>
-                <Form.Item
-                  label={<span className="textStyles-small">Version</span>}
-                  name="version"
-                  rules={[{ required: true, message: 'Please input the version!' }]}
-                >
-                  <Input style={{ width: '99%' }} />
-                </Form.Item>
-              </Col>
-              <Col span={12}>
+              <Col span={24}>
                 <Form.Item
                   label={<span className="textStyles-small">Service Type</span>}
                   name="serviceType"
