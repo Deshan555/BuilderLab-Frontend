@@ -81,8 +81,8 @@ const ViewForm = () => {
       title: <span className='textStyles-small'>Section Name</span>,
       dataIndex: 'sessionName',
       key: 'sessionName',
-      render: (text) => (
-        <span className='textStyles-small'>{text}</span>
+      render: (text, record) => (
+        <span className='textStyles-small'>{record?.section?.sectionName}</span>
       ),
     },
     {
@@ -248,6 +248,19 @@ const ViewForm = () => {
           <Descriptions.Item label={<span className='textStyles-small'>Checklist ID</span>}>
             <span className='textStyles-small'>{selectedChecklist?.checklistID}</span>
           </Descriptions.Item>
+          <Descriptions.Item label={<span className='textStyles-small'>Groups</span>} column={1} span={24}>
+            <Descriptions size='small' column={1} bordered>
+              {
+                selectedChecklist?.groups?.map((group, index) => (
+                  <Descriptions.Item
+                    label={<span className='textStyles-small'>{group?.groupName}</span>}
+                  >
+                    <span className='textStyles-small'>{group?.groupDescription}</span>
+                  </Descriptions.Item>
+                ))
+              }
+            </Descriptions>
+          </Descriptions.Item>
           <Descriptions.Item label={<span className='textStyles-small'>Sections</span>}>
             <Descriptions size='small' column={1} bordered>
               {
@@ -255,7 +268,7 @@ const ViewForm = () => {
                   <Descriptions.Item
                     label={<span className='textStyles-small'>{section?.sectionName}</span>}
                   >
-                    <span className='textStyles-small'>Section Description: {section?.sectionDescription}</span>
+                    <span className='textStyles-small'>{section?.sectionDescription}</span>
                   </Descriptions.Item>
                 ))
               }
