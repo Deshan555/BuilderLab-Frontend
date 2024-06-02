@@ -291,7 +291,7 @@ function Home() {
                 onClick={() => {
                   setOpenModal(true);
                 }}
-              > <span className="textStyles-small">Save And Publish</span>
+              > <span className="textStyles-small">Save For Publish</span>
               </Button>
 
               {
