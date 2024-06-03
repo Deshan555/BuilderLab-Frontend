@@ -171,7 +171,7 @@ const ViewForm = () => {
             }}
           />
           
-          <Button
+          {/* <Button
             type='primary'
             size="small"
             shape="circle"
@@ -184,7 +184,7 @@ const ViewForm = () => {
               setSection(record);
               setTemplateUpdateModal(true);
             }}
-          />
+          /> */}
         </div>
       ),
     }
