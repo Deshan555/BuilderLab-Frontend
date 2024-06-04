@@ -27,6 +27,7 @@ const ViewForm = () => {
   const [openViewModal, setOpenViewModal] = React.useState(false);
   const [checklistModal, setChecklistModal] = React.useState(false);
   const [templateUpdateModal, setTemplateUpdateModal] =  React.useState(false);
+  const [fullJson, setFullJson] = React.useState({});
 
   useEffect(() => {
     getChecklists();
@@ -37,6 +38,22 @@ const ViewForm = () => {
     const response = await apiExecutions.getChecklistsFetch();
     if (response != null) {
       setChecklists(response);
+      setLoading(false);
+    } else {
+      setLoading(false);
+      notification.error({
+        message: 'Error',
+        description: 'Error fetching checklists',
+        duration: 2,
+      });
+    }
+  };
+
+  const fetchFullChecklistByIdForPublishFetch = async (id) => {
+    setLoading(true);
+    const response = await apiExecutions.fetchFullChecklistByIdForPublish(id);
+    if (response != null) {
+      setFullJson(response);
       setLoading(false);
     } else {
       setLoading(false);
@@ -59,8 +76,10 @@ const ViewForm = () => {
   const getSections = async (id) => {
     setLoading(true);
     const response = await apiExecutions.fetchSectionsByChklName(id);
+    console.log(response);
     if (response != null) {
       setSections(response);
+      fetchFullChecklistByIdForPublishFetch(id);
       setLoading(false);
     } else {
       setLoading(false);
@@ -143,14 +162,14 @@ const ViewForm = () => {
         </div>
       ),
     },
-    {
-      title: <span className='textStyles-small'>Active</span>,
-      dataIndex: 'changeLog',
-      key: 'changeLog',
-      render: (text) => (
-        <span className='textStyles-small'>{text}</span>
-      ),
-    },
+    // {
+    //   title: <span className='textStyles-small'>Active</span>,
+    //   dataIndex: 'changeLog',
+    //   key: 'changeLog',
+    //   render: (text) => (
+    //     <span className='textStyles-small'>{text}</span>
+    //   ),
+    // },
     {
       title: <span className='textStyles-small'>Actions</span>,
       dataIndex: 'actions',
@@ -289,6 +308,15 @@ const ViewForm = () => {
         />
       ),
     },
+    {
+      key: '3',
+      label: <span className='textStyles-small'>Full Json Preview</span>,
+      children: (
+        <pre>
+          {JSON.stringify(fullJson, null, 2)}
+        </pre>
+      ),
+    }
   ];
 
   const slider = [
@@ -303,7 +331,7 @@ const ViewForm = () => {
           column={2}
         >
           <Descriptions.Item label={<span className='textStyles-small'>Section Name</span>}>
-            <span className='textStyles-small'>{section?.sessionName}</span>
+            <span className='textStyles-small'>{section?.section?.sectionName}</span>
           </Descriptions.Item>
           <Descriptions.Item label={<span className='textStyles-small'>Description</span>}>
             <span className='textStyles-small'>{section?.sessionDescription}</span>
@@ -345,14 +373,14 @@ const ViewForm = () => {
       label: <span className='textStyles-small'>Versions</span>,
       children: (
         <Steps
-          current={sections.findIndex(section => section.sessionName === selectedSection)}
+          current={sections?.findIndex(section => section?.section?.sectionName === selectedSection)}
           size="small"
           direction="vertical"
-          items={sections.filter(section => section.sessionName === selectedSection)
+          items={sections?.filter(section => section?.section?.sectionName === selectedSection)
             .map((section, index) => (
               {
                 title: <span className='textStyles-small' style={{ fontSize: '14px'}}>{section?.version}</span>,
-                subTitle: <span className='textStyles-small' style={{ fontSize: '11px' }}>{section?.sessionName} <Badge style={{marginLeft: '10px'}}
+                subTitle: <span className='textStyles-small' style={{ fontSize: '11px' }}>{section?.section?.sectionName} <Badge style={{marginLeft: '10px'}}
                 status={section?.isActive === "true" ? 'success' : 'error'} text={section?.isActive === "true" ? 'Active' : 'Inactive'} /></span>,
                 icon: <ClockCircleOutlined />,
                 description: (
@@ -411,12 +439,12 @@ const ViewForm = () => {
                 option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }
               onChange={(value) => {
-                const selectedChecklist = checklists.find((checklist) => checklist.checklistID === value);
+                const selectedChecklist = checklists?.find((checklist) => checklist?.checklistID === value);
                 setSelectedChecklist(selectedChecklist);
                 sectionsFetchingSupport(value);
               }}
             >
-              {checklists.map((checklist, index) => (
+              {checklists?.map((checklist, index) => (
                 <Select.Option key={index} value={checklist?.checklistID}>{checklist?.name}</Select.Option>
               ))}
             </Select>
