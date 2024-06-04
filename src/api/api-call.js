@@ -203,6 +203,25 @@ const apiExecutions = {
             return null;
         }
     },
+    fetchChecklistById: async (id) => {
+        try {
+            const response = await axios.get(baseDetails.CORE_SERVICE_URL + `checklist/id/${id}`, {
+                // headers: {
+                //     Authorization: `Bearer ${localStorage.getItem('atoken')}`,
+                // },
+            });
+            return response.data;
+        } catch (error) {
+            if (error.response) {
+                return error.response.data;
+            } else if (error.request) {
+                return error.request.data;
+            } else {
+                console.error('Error setting up the request:', error.message);
+            }
+            return null;
+        }
+    },
 };
 
 export { apiExecutions };
