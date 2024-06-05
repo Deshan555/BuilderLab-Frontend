@@ -185,8 +185,9 @@ const apiExecutions = {
         }
     },
     convertChecklist: async (data) => {
+        console.log(data);
         try {
-            const response = await axios.post(baseDetails.CORE_SERVICE_URL + 'checklistConverter/convertChecklist', data, {
+            const response = await axios.post(baseDetails.CONVERTER_SERVICE_URL + 'checklistConverter/convertChecklist', data, {
                 // headers: {
                 //     Authorization: `Bearer ${localStorage.getItem('atoken')}`,
                 // },
