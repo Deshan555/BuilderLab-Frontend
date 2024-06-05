@@ -64,7 +64,7 @@ const apiExecutions = {
             return null;
         }
     },
-    craeteChecklists : async (data) => {
+    craeteChecklists: async (data) => {
         try {
             const response = await axios.post(baseDetails.CORE_SERVICE_URL + 'checklists', data, {
                 // headers: {
@@ -84,7 +84,6 @@ const apiExecutions = {
             return null;
         }
     },
-    // /checklists/:id
     updateChecklist: async (id, data) => {
         try {
             const response = await axios.put(baseDetails.CORE_SERVICE_URL + `checklists/${id}`, data, {
@@ -145,7 +144,6 @@ const apiExecutions = {
             return null;
         }
     },
-    // groups
     fetchAllGroups: async () => {
         try {
             const response = await axios.get(baseDetails.CORE_SERVICE_URL + 'groups', {
@@ -166,7 +164,6 @@ const apiExecutions = {
             return null;
         }
     },
-    // post groups
     postGroups: async (data) => {
         try {
             const response = await axios.post(baseDetails.CORE_SERVICE_URL + 'groups', data, {
@@ -187,9 +184,64 @@ const apiExecutions = {
             return null;
         }
     },
-
-
-    
-    };
+    convertChecklist: async (data) => {
+        console.log(data);
+        try {
+            const response = await axios.post(baseDetails.CONVERTER_SERVICE_URL + 'checklistConverter/convertChecklist', data, {
+                // headers: {
+                //     Authorization: `Bearer ${localStorage.getItem('atoken')}`,
+                // },
+            });
+            return response.data;
+        } catch (error) {
+            if (error.response) {
+                return error.response.data;
+            } else if (error.request) {
+                return error.request.data;
+            } else {
+                console.error('Error setting up the request:', error.message);
+            }
+            return null;
+        }
+    },
+    fetchChecklistById: async (id) => {
+        try {
+            const response = await axios.get(baseDetails.CORE_SERVICE_URL + `checklist/id/${id}`, {
+                // headers: {
+                //     Authorization: `Bearer ${localStorage.getItem('atoken')}`,
+                // },
+            });
+            return response.data;
+        } catch (error) {
+            if (error.response) {
+                return error.response.data;
+            } else if (error.request) {
+                return error.request.data;
+            } else {
+                console.error('Error setting up the request:', error.message);
+            }
+            return null;
+        }
+    },
+    fetchFullChecklistByIdForPublish: async (id) => {
+        try {
+            const response = await axios.get(baseDetails.CORE_SERVICE_URL + `fulltemplates/checklist/full/${id}`, {
+                // headers: {
+                //     Authorization: `Bearer ${localStorage.getItem('atoken')}`,
+                // },
+            });
+            return response.data;
+        } catch (error) {
+            if (error.response) {
+                return error.response.data;
+            } else if (error.request) {
+                return error.request.data;
+            } else {
+                console.error('Error setting up the request:', error.message);
+            }
+            return null;
+        }
+    },
+};
 
 export { apiExecutions };

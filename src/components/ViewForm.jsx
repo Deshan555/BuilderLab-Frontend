@@ -8,7 +8,7 @@ import { apiExecutions } from './../api/api-call';
 import ReactDOM from "react-dom";
 import "./../styles.css";
 import { Badge, Breadcrumb, Checkbox, InputNumber, Spin, Avatar, Notification, notification, Card, Skeleton, Switch, Table, Select, Input, Button, Row, Upload, Col, Dropdown, Tag, Modal, Steps, message, Form, DatePicker, TimePicker, Descriptions, Image, Tabs, Collapse } from 'antd';
-import { ClockCircleOutlined ,HighlightOutlined, PlusOutlined, DownOutlined, UploadOutlined, CheckOutlined, CloseOutlined, LoadingOutlined, MinusCircleOutlined, PlusCircleOutlined, DeleteOutlined, EditOutlined, SaveOutlined, ExclamationCircleOutlined, EyeOutlined } from '@ant-design/icons';
+import { ClockCircleOutlined , SendOutlined, HighlightOutlined, PlusOutlined, DownOutlined, UploadOutlined, CheckOutlined, CloseOutlined, LoadingOutlined, MinusCircleOutlined, PlusCircleOutlined, DeleteOutlined, EditOutlined, SaveOutlined, ExclamationCircleOutlined, EyeOutlined } from '@ant-design/icons';
 import "./../formBuilder.css";
 import EditTemplates from "./EditTemplates";
 import FormBuilder from "./Formbuilder";
@@ -27,6 +27,7 @@ const ViewForm = () => {
   const [openViewModal, setOpenViewModal] = React.useState(false);
   const [checklistModal, setChecklistModal] = React.useState(false);
   const [templateUpdateModal, setTemplateUpdateModal] =  React.useState(false);
+  const [fullJson, setFullJson] = React.useState({});
 
   useEffect(() => {
     getChecklists();
@@ -48,6 +49,43 @@ const ViewForm = () => {
     }
   };
 
+  const fetchFullChecklistByIdForPublishFetch = async (id) => {
+    setLoading(true);
+    const response = await apiExecutions.fetchFullChecklistByIdForPublish(id);
+    if (response != null) {
+      setFullJson(response);
+      setLoading(false);
+    } else {
+      setLoading(false);
+      notification.error({
+        message: 'Error',
+        description: 'Error fetching checklists',
+        duration: 2,
+      });
+    }
+  };
+
+  const convertChecklistFunc = async (data) => {
+    setLoading(true);
+    console.log(data);
+    const response = await apiExecutions.convertChecklist(data);
+    if (response != null) {
+      setLoading(false);
+      notification.success({
+        message: 'Success',
+        description: 'Checklist converted successfully',
+        duration: 2,
+      });
+    } else {
+      setLoading(false);
+      notification.error({
+        message: 'Error',
+        description: 'Error converting checklist',
+        duration: 2,
+      });
+    }
+  };
+
   const checklistModalClose = () => {
     setChecklistModal(false);
   }
@@ -59,8 +97,10 @@ const ViewForm = () => {
   const getSections = async (id) => {
     setLoading(true);
     const response = await apiExecutions.fetchSectionsByChklName(id);
+    console.log(response);
     if (response != null) {
       setSections(response);
+      fetchFullChecklistByIdForPublishFetch(id);
       setLoading(false);
     } else {
       setLoading(false);
@@ -143,14 +183,14 @@ const ViewForm = () => {
         </div>
       ),
     },
-    {
-      title: <span className='textStyles-small'>Active</span>,
-      dataIndex: 'changeLog',
-      key: 'changeLog',
-      render: (text) => (
-        <span className='textStyles-small'>{text}</span>
-      ),
-    },
+    // {
+    //   title: <span className='textStyles-small'>Active</span>,
+    //   dataIndex: 'changeLog',
+    //   key: 'changeLog',
+    //   render: (text) => (
+    //     <span className='textStyles-small'>{text}</span>
+    //   ),
+    // },
     {
       title: <span className='textStyles-small'>Actions</span>,
       dataIndex: 'actions',
@@ -289,6 +329,21 @@ const ViewForm = () => {
         />
       ),
     },
+    {
+      key: '3',
+      label: <span className='textStyles-small'>Full Json Preview</span>,
+      children: (
+        <JSONInput
+          style={{ border: "1px solid #ccc", borderRadius: "5px" }}
+          id='a_unique_id'
+          placeholder={fullJson}
+          locale={locale}
+          height='100vh'
+          width='100%'
+          readOnly={true}
+        />
+      ),
+    }
   ];
 
   const slider = [
@@ -303,7 +358,7 @@ const ViewForm = () => {
           column={2}
         >
           <Descriptions.Item label={<span className='textStyles-small'>Section Name</span>}>
-            <span className='textStyles-small'>{section?.sessionName}</span>
+            <span className='textStyles-small'>{section?.section?.sectionName}</span>
           </Descriptions.Item>
           <Descriptions.Item label={<span className='textStyles-small'>Description</span>}>
             <span className='textStyles-small'>{section?.sessionDescription}</span>
@@ -345,14 +400,14 @@ const ViewForm = () => {
       label: <span className='textStyles-small'>Versions</span>,
       children: (
         <Steps
-          current={sections.findIndex(section => section.sessionName === selectedSection)}
+          current={sections?.findIndex(section => section?.section?.sectionName === selectedSection)}
           size="small"
           direction="vertical"
-          items={sections.filter(section => section.sessionName === selectedSection)
+          items={sections?.filter(section => section?.section?.sectionName === selectedSection)
             .map((section, index) => (
               {
                 title: <span className='textStyles-small' style={{ fontSize: '14px'}}>{section?.version}</span>,
-                subTitle: <span className='textStyles-small' style={{ fontSize: '11px' }}>{section?.sessionName} <Badge style={{marginLeft: '10px'}}
+                subTitle: <span className='textStyles-small' style={{ fontSize: '11px' }}>{section?.section?.sectionName} <Badge style={{marginLeft: '10px'}}
                 status={section?.isActive === "true" ? 'success' : 'error'} text={section?.isActive === "true" ? 'Active' : 'Inactive'} /></span>,
                 icon: <ClockCircleOutlined />,
                 description: (
@@ -411,22 +466,29 @@ const ViewForm = () => {
                 option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }
               onChange={(value) => {
-                const selectedChecklist = checklists.find((checklist) => checklist.checklistID === value);
+                const selectedChecklist = checklists?.find((checklist) => checklist?.checklistID === value);
                 setSelectedChecklist(selectedChecklist);
                 sectionsFetchingSupport(value);
               }}
             >
-              {checklists.map((checklist, index) => (
+              {checklists?.map((checklist, index) => (
                 <Select.Option key={index} value={checklist?.checklistID}>{checklist?.name}</Select.Option>
               ))}
             </Select>
             {
               selectedChecklist !== null ? (
-                <Button type='primary' style={{ marginLeft: '10px' }}
-                  icon={<EyeOutlined />}
-                  onClick={() => { setChecklistModal(true) }}>
-                  <span className='textStyles-small'>Preview</span>
-                </Button>
+                <>
+                  <Button type='primary' style={{ marginLeft: '10px' }}
+                    icon={<EyeOutlined />}
+                    onClick={() => { setChecklistModal(true) }}>
+                    <span className='textStyles-small'>Preview Checklist</span>
+                  </Button>
+                  <Button type='primary' style={{ marginLeft: '10px', backgroundColor: '#1FAD4B', borderColor: '#1FAD4B' }}
+                    icon={<SendOutlined />}
+                    onClick={() => { convertChecklistFunc(fullJson) }}>
+                    <span className='textStyles-small'>Publish Checklist</span>
+                  </Button>
+                </>
               ) : null
             }
           </div>
