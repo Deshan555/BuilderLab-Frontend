@@ -8,7 +8,7 @@ import { apiExecutions } from './../api/api-call';
 import ReactDOM from "react-dom";
 import "./../styles.css";
 import { Badge, Breadcrumb, Checkbox, InputNumber, Spin, Avatar, Notification, notification, Card, Skeleton, Switch, Table, Select, Input, Button, Row, Upload, Col, Dropdown, Tag, Modal, Steps, message, Form, DatePicker, TimePicker, Descriptions, Image, Tabs, Collapse } from 'antd';
-import { ClockCircleOutlined ,HighlightOutlined, PlusOutlined, DownOutlined, UploadOutlined, CheckOutlined, CloseOutlined, LoadingOutlined, MinusCircleOutlined, PlusCircleOutlined, DeleteOutlined, EditOutlined, SaveOutlined, ExclamationCircleOutlined, EyeOutlined } from '@ant-design/icons';
+import { ClockCircleOutlined , SendOutlined, HighlightOutlined, PlusOutlined, DownOutlined, UploadOutlined, CheckOutlined, CloseOutlined, LoadingOutlined, MinusCircleOutlined, PlusCircleOutlined, DeleteOutlined, EditOutlined, SaveOutlined, ExclamationCircleOutlined, EyeOutlined } from '@ant-design/icons';
 import "./../formBuilder.css";
 import EditTemplates from "./EditTemplates";
 import FormBuilder from "./Formbuilder";
@@ -60,6 +60,27 @@ const ViewForm = () => {
       notification.error({
         message: 'Error',
         description: 'Error fetching checklists',
+        duration: 2,
+      });
+    }
+  };
+
+  const convertChecklistFunc = async (data) => {
+    setLoading(true);
+    console.log(data);
+    const response = await apiExecutions.convertChecklist(data);
+    if (response != null) {
+      setLoading(false);
+      notification.success({
+        message: 'Success',
+        description: 'Checklist converted successfully',
+        duration: 2,
+      });
+    } else {
+      setLoading(false);
+      notification.error({
+        message: 'Error',
+        description: 'Error converting checklist',
         duration: 2,
       });
     }
@@ -312,9 +333,15 @@ const ViewForm = () => {
       key: '3',
       label: <span className='textStyles-small'>Full Json Preview</span>,
       children: (
-        <pre>
-          {JSON.stringify(fullJson, null, 2)}
-        </pre>
+        <JSONInput
+          style={{ border: "1px solid #ccc", borderRadius: "5px" }}
+          id='a_unique_id'
+          placeholder={fullJson}
+          locale={locale}
+          height='100vh'
+          width='100%'
+          readOnly={true}
+        />
       ),
     }
   ];
@@ -450,11 +477,18 @@ const ViewForm = () => {
             </Select>
             {
               selectedChecklist !== null ? (
-                <Button type='primary' style={{ marginLeft: '10px' }}
-                  icon={<EyeOutlined />}
-                  onClick={() => { setChecklistModal(true) }}>
-                  <span className='textStyles-small'>Preview</span>
-                </Button>
+                <>
+                  <Button type='primary' style={{ marginLeft: '10px' }}
+                    icon={<EyeOutlined />}
+                    onClick={() => { setChecklistModal(true) }}>
+                    <span className='textStyles-small'>Preview Checklist</span>
+                  </Button>
+                  <Button type='primary' style={{ marginLeft: '10px', backgroundColor: '#1FAD4B', borderColor: '#1FAD4B' }}
+                    icon={<SendOutlined />}
+                    onClick={() => { convertChecklistFunc(fullJson) }}>
+                    <span className='textStyles-small'>Publish Checklist</span>
+                  </Button>
+                </>
               ) : null
             }
           </div>
