@@ -100,8 +100,8 @@ const Checklist = () => {
                             setFormVisible(true);
                             setNoOfSections(record.sectionCount);
                             setIsUpdate(true);
-                           setGroupData(record.groups);
-                           setSectionData(record.sections);
+                            setGroupData(record.groups);
+                            setSectionData(record.sections);
                         }} />
 
                     <Button
@@ -434,35 +434,35 @@ const Checklist = () => {
                                                 </Button>
                                             </Row>
                                         </div>
-                                        <div style={{ backgroundColor: '#faf9f9', padding: '10px', borderRadius: '10px', marginTop: '10px'  }}>
+                                        <div style={{ backgroundColor: '#faf9f9', padding: '10px', borderRadius: '10px', marginTop: '10px' }}>
                                             <Row>
-                                            {
-                                                groupData ? groupData.map((data, index) => (
-                                                    <Card style={{ width: 320, marginTop: 10, marginLeft: 10 }} loading={false}>
-                                                        <div>
-                                                            <Row>
-                                                                <Col span={20}>
-                                                                    <span className="textStyles-small" style={{ fontSize: '14px' }}>
-                                                                        {data?.groupName}</span>
-                                                                    <br />
-                                                                    <span className="textStyles-small">{data?.groupDescription}</span>
-                                                                </Col>
-                                                                <Col span={4}>
-                                                                    <Popconfirm
-                                                                        title="Are you sure to delete this item?"
-                                                                        onConfirm={() => handleDeleteGroups(data.groupID)}
-                                                                        okText="Yes"
-                                                                        cancelText="No"
-                                                                        style={{ marginTop: 10 }}
-                                                                    >
-                                                                        <Button type="primary" danger icon={<DeleteOutlined />} shape="circle" size="medium" />
-                                                                    </Popconfirm>
-                                                                </Col>
-                                                            </Row>
-                                                        </div>
-                                                    </Card>
-                                                )) : null
-                                            }
+                                                {
+                                                    groupData ? groupData.map((data, index) => (
+                                                        <Card style={{ width: 320, marginTop: 10, marginLeft: 10 }} loading={false}>
+                                                            <div>
+                                                                <Row>
+                                                                    <Col span={20}>
+                                                                        <span className="textStyles-small" style={{ fontSize: '14px' }}>
+                                                                            {data?.groupName}</span>
+                                                                        <br />
+                                                                        <span className="textStyles-small">{data?.groupDescription}</span>
+                                                                    </Col>
+                                                                    <Col span={4}>
+                                                                        <Popconfirm
+                                                                            title="Are you sure to delete this item?"
+                                                                            onConfirm={() => handleDeleteGroups(data.groupID)}
+                                                                            okText="Yes"
+                                                                            cancelText="No"
+                                                                            style={{ marginTop: 10 }}
+                                                                        >
+                                                                            <Button type="primary" danger icon={<DeleteOutlined />} shape="circle" size="medium" />
+                                                                        </Popconfirm>
+                                                                    </Col>
+                                                                </Row>
+                                                            </div>
+                                                        </Card>
+                                                    )) : null
+                                                }
                                             </Row>
                                         </div>
 
@@ -493,7 +493,7 @@ const Checklist = () => {
                                             </Row>
                                         </div>
 
-                                        <div style={{ marginTop: '10px', backgroundColor: '#faf9f9', padding: '10px', borderRadius: '10px'}}>
+                                        <div style={{ marginTop: '10px', backgroundColor: '#faf9f9', padding: '10px', borderRadius: '10px' }}>
                                             <Row>
                                                 {
                                                     sectionData ? sectionData.map((data, index) => (
@@ -503,7 +503,7 @@ const Checklist = () => {
                                                                     <Col span={20}>
                                                                         <span className="textStyles-small" style={{ fontSize: '14px' }}>
                                                                             {data?.sectionName}
-                                                                            </span>
+                                                                        </span>
                                                                         <Tag color="blue" style={{ marginLeft: '10px' }}>
                                                                             <span className="textStyles-small">{data?.groupID}</span>
                                                                         </Tag>
@@ -529,14 +529,14 @@ const Checklist = () => {
                                             </Row>
                                         </div>
                                         {
-                                                    sectionData.length === 0 ? (
-                                                        <Col span={24}>
-                                                            <Empty
-                                                                style={{ marginTop: '30px' }}
-                                                                description={<span className='textStyles-small'>No Section Created Yet</span>} />
-                                                        </Col>
-                                                    ) : null
-                                                }
+                                            sectionData.length === 0 ? (
+                                                <Col span={24}>
+                                                    <Empty
+                                                        style={{ marginTop: '30px' }}
+                                                        description={<span className='textStyles-small'>No Section Created Yet</span>} />
+                                                </Col>
+                                            ) : null
+                                        }
                                     </>
                                 ) : null
                             }
@@ -564,21 +564,21 @@ const Checklist = () => {
                             }
                         </Form>
                         <Divider />
-                        <Row>
-                            <Col span={24} style={{ marginTop: '10px' }}>
+                        <Row justify={'end'}>
+                            <Col span={24} style={{ marginTop: '10px', display: 'flex', justifyContent: 'flex-end' }}>
                                 {
-                                    next !== 3 ? (
-                                        <Button type="primary" size='medium' style={{ width: '80px', marginRight: '10px' }}
-                                            onClick={() => sextNext(next + 1)}>
-                                            <span className='textStyles-small'>Next</span>
+                                    next > 0 ? (
+                                        <Button type="primary" size='medium' style={{ width: '80px', marginRight: '10px' }} danger
+                                            onClick={() => sextNext(next - 1)}>
+                                            <span className='textStyles-small'>Back</span>
                                         </Button>
                                     ) : null
                                 }
                                 {
-                                    next > 0 ? (
-                                        <Button type="primary" size='medium' style={{ width: '80px' }} danger
-                                            onClick={() => sextNext(next - 1)}>
-                                            <span className='textStyles-small'>Back</span>
+                                    next !== 3 ? (
+                                        <Button type="primary" size='medium' style={{ width: '80px' }}
+                                            onClick={() => sextNext(next + 1)}>
+                                            <span className='textStyles-small'>Next</span>
                                         </Button>
                                     ) : null
                                 }
