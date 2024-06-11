@@ -364,10 +364,10 @@ const ViewForm = () => {
             <span className='textStyles-small'>{section?.sessionDescription}</span>
           </Descriptions.Item>
           <Descriptions.Item label={<span className='textStyles-small'>Created On</span>}>
-            <span className='textStyles-small'>{section?.createdOn}</span>
+            <span className='textStyles-small'>{section?.createdOn ? new Date(section?.createdOn).toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }) : ''}</span>
           </Descriptions.Item>
           <Descriptions.Item label={<span className='textStyles-small'>Updated On</span>}>
-            <span className='textStyles-small'>{section?.updatedOn}</span>
+            <span className='textStyles-small'>{section?.updatedOn ? new Date(section?.updatedOn).toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }) : ''}</span>
           </Descriptions.Item>
           <Descriptions.Item label={<span className='textStyles-small'>Version</span>}>
             <span className='textStyles-small'>{section?.version}</span>
@@ -395,40 +395,40 @@ const ViewForm = () => {
           /> </div>
       ),
     },
-    {
-      key: '3',
-      label: <span className='textStyles-small'>Versions</span>,
-      children: (
-        <Steps
-          current={sections?.findIndex(section => section?.section?.sectionName === selectedSection)}
-          size="small"
-          direction="vertical"
-          items={sections?.filter(section => section?.section?.sectionName === selectedSection)
-            .map((section, index) => (
-              {
-                title: <span className='textStyles-small' style={{ fontSize: '14px'}}>{section?.version}</span>,
-                subTitle: <span className='textStyles-small' style={{ fontSize: '11px' }}>{section?.section?.sectionName} <Badge style={{marginLeft: '10px'}}
-                status={section?.isActive === "true" ? 'success' : 'error'} text={section?.isActive === "true" ? 'Active' : 'Inactive'} /></span>,
-                icon: <ClockCircleOutlined />,
-                description: (
-                  <div>
-                    <span className='textStyles-small'>Change Log: {section?.changeLog}</span><br />
-                    <span style={{ fontSize: '11px', color: 'gray', cursor: 'pointer' }} className='textStyles-small'>Created On: {new Date(section?.createdOn).toLocaleString('en-US', { timeZone: 'Asia/Kolkata' })}</span>
-                    <span style={{ marginLeft: '10px', fontSize: '11px', color: 'gray', cursor: 'pointer' }} className='textStyles-small'>Updated On: {new Date(section?.updatedOn).toLocaleString('en-US', { timeZone: 'Asia/Kolkata' })}</span>
-                  </div>
-                )
-              }
-            ))}
-        />
-      )
-    }
+    // {
+    //   key: '3',
+    //   label: <span className='textStyles-small'>Versions</span>,
+    //   children: (
+    //     <Steps
+    //       current={sections?.findIndex(section => section?.section?.sectionName === selectedSection)}
+    //       size="small"
+    //       direction="vertical"
+    //       items={sections?.filter(sectionData => section?.section?.sectionName === selectedSection)
+    //         .map((section, index) => (
+    //           {
+    //             title: <span className='textStyles-small' style={{ fontSize: '14px'}}>{section?.version}</span>,
+    //             subTitle: <span className='textStyles-small' style={{ fontSize: '11px' }}>{section?.section?.sectionName} <Badge style={{marginLeft: '10px'}}
+    //             status={section?.isActive === "true" ? 'success' : 'error'} text={section?.isActive === "true" ? 'Active' : 'Inactive'} /></span>,
+    //             icon: <ClockCircleOutlined />,
+    //             description: (
+    //               <div>
+    //                 <span className='textStyles-small'>Change Log: {section?.changeLog}</span><br />
+    //                 <span style={{ fontSize: '11px', color: 'gray', cursor: 'pointer' }} className='textStyles-small'>Created On: {new Date(section?.createdOn).toLocaleString('en-US', { timeZone: 'Asia/Kolkata' })}</span>
+    //                 <span style={{ marginLeft: '10px', fontSize: '11px', color: 'gray', cursor: 'pointer' }} className='textStyles-small'>Updated On: {new Date(section?.updatedOn).toLocaleString('en-US', { timeZone: 'Asia/Kolkata' })}</span>
+    //               </div>
+    //             )
+    //           }
+    //         ))}
+    //     />
+    //   )
+    // }
   ]
 
   const checklistBuild = selectedChecklist?.sections?.map((main_section) => (
     {
       key: main_section?.sectionName,
       label: <span className='textStyles-small'>{main_section?.sectionName}</span>,
-      children: sections?.filter(section => main_section.sectionName === section?.sessionName && section.isActive === 'true').map((section, index) => {
+      children: sections?.filter(section => main_section.sectionName === section?.section?.sectionName && section.isActive === 'true').map((section, index) => {
         console.log("sectionLkr:", section);
         return <DynamicForm json={section?.template} />;
       }),
