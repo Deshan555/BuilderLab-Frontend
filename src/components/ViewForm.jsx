@@ -177,7 +177,7 @@ const ViewForm = () => {
       key: 'serviceType',
       render: (text) => (
         <div>
-          {text.map((item, index) => (
+          {text?.map((item, index) => (
             <span className='textStyles-small' key={index}>{item.replace(/_/g, ' ')} ,</span>
           ))}
         </div>
