@@ -42,13 +42,9 @@ const App = () => (
             size="small"
             style={{ height: '100%', borderRight: 0 }}
           >
-            <Menu.Item key="1" icon={<ExperimentOutlined />}>
-              <Link to="/">
-                <span className='textStyles-small'>
-                  Builder Lab
-                </span>
-              </Link>
-            </Menu.Item>
+<Menu.Item key="1" icon={<ExperimentOutlined />} onClick={() => window.location.reload()}>
+    <Link to="/"><span className='textStyles-small'>Builder Lab</span></Link>
+</Menu.Item>
             <Menu.Item key="4" icon={<NotificationOutlined />}>
               <Link to="/checklist"><span className='textStyles-small'>Checklists</span></Link>
             </Menu.Item>
