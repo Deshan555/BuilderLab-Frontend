@@ -30,7 +30,7 @@ const Checklist = () => {
     const getChecklistsFetch = async () => {
         const checklists = await apiExecutions.getChecklistsFetch();
         if (checklists !== undefined || checklists !== null) {
-            setAllChecklists(checklists);
+            setAllChecklists(checklists.slice().reverse());
             setLoading(false);
         }
     };
@@ -328,7 +328,7 @@ const Checklist = () => {
                     }}
                 >
                     <span className='textStyles-small'>
-                        {formVisible ? 'Back' : 'New Checklist'}
+                        {formVisible ? null : 'New Checklist'}
                     </span>
                 </Button>
             </Row>
@@ -394,7 +394,7 @@ const Checklist = () => {
 
                                             <Col span={12}>
                                                 <Form.Item
-                                                    label={<span className='textStyles-small'>Creater Email</span>}
+                                                    label={<span className='textStyles-small'>Creator Email</span>}
                                                     name={'createdByMail'}
                                                     initialValue={selectedChecklist?.createdByMail}
                                                     rules={[{ required: true, message: 'Please input creator email!' }]}
@@ -677,9 +677,6 @@ const Checklist = () => {
             }}
             />
         </Modal> */}
-
-
-
         <Modal
             title={<span className='textStyles-small' style={{ fontSize: '14px' }}>
                 {inputType === 0 ? 'Section Management' : 'Groups Management'}

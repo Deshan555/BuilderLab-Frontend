@@ -25,27 +25,14 @@ import Example from './components/Three';
 // import Section4 from './components/Section4';
 // import Section5 from './components/Section5';
 
-
-const jsonData = [
-  {
-    "name": "Routine Maintenance Updated",
-    "description": "Updated weekly routine maintenance checklist",
-    "createdOn": "2021-07-01",
-    "updatedOn": "2021-07-01",
-    "version": "1.0",
-    "isActive": true,
-    "checklistID": "CHECKLIST-1",
-  }
-]
-
 const { Header, Content, Sider } = Layout;
 
 const App = () => (
   <Router>
     <Layout style={{ minHeight: '100vh' }}>
-<Header className="header sticky-header" style={{ position: 'fixed', zIndex: 1, width: '100%', height: '60px', display: 'flex', alignItems: 'center', justifyContent: 'flex-start', backgroundColor: '#2b2b2b', boxShadow: '0 2px 8px #f0f1f2' }}>
-  <img src={Logo} alt="Logo" width={100} height={40} />
-</Header>
+      <Header className="header sticky-header" style={{ position: 'fixed', zIndex: 1, width: '100%', height: '60px', display: 'flex', alignItems: 'center', justifyContent: 'flex-start', backgroundColor: '#2b2b2b', boxShadow: '0 2px 8px #f0f1f2' }}>
+        <img src={Logo} alt="Logo" width={100} height={40} />
+      </Header>
       <Layout style={{ marginTop: 62 }}>
         <Sider width={200} className="site-layout-background">
           <Menu
@@ -55,13 +42,9 @@ const App = () => (
             size="small"
             style={{ height: '100%', borderRight: 0 }}
           >
-            <Menu.Item key="1" icon={<ExperimentOutlined />}>
-              <Link to="/">
-                <span className='textStyles-small'>
-                  Builder Lab
-                </span>
-              </Link>
-            </Menu.Item>
+<Menu.Item key="1" icon={<ExperimentOutlined />} onClick={() => window.location.reload()}>
+    <Link to="/"><span className='textStyles-small'>Builder Lab</span></Link>
+</Menu.Item>
             <Menu.Item key="4" icon={<NotificationOutlined />}>
               <Link to="/checklist"><span className='textStyles-small'>Checklists</span></Link>
             </Menu.Item>

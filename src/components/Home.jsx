@@ -28,10 +28,10 @@ function Home() {
   const [isActive, setIsactive] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
   
-  useEffect(() => {
+useEffect(() => {
     fetchAllChecklists();
-  }, []);
-
+    // window.location.reload();
+}, []);
   const preventive_maintenance_tasks = {
     gen_service: "Gen service",
     rectifier_service: "Rectifier service",
@@ -429,7 +429,6 @@ function Home() {
                 <Form.Item
                   label={<span className="textStyles-small">Service Type</span>}
                   name="serviceType"
-                  rules={[{ required: true, message: 'Please input the service type!' }]}
                 >
                   <Select style={{ width: '99%' }} mode="multiple" allowClear>
                     {
