@@ -30,7 +30,7 @@ const Checklist = () => {
     const getChecklistsFetch = async () => {
         const checklists = await apiExecutions.getChecklistsFetch();
         if (checklists !== undefined || checklists !== null) {
-            setAllChecklists(checklists);
+            setAllChecklists(checklists.slice().reverse());
             setLoading(false);
         }
     };
@@ -328,7 +328,7 @@ const Checklist = () => {
                     }}
                 >
                     <span className='textStyles-small'>
-                        {formVisible ? 'Back' : 'New Checklist'}
+                        {formVisible ? null : 'New Checklist'}
                     </span>
                 </Button>
             </Row>
